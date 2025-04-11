@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Personality Quiz</h1>
+        
+        <div class="question">
+            <h3>1. When faced with a challenge, do you:</h3>
+            <input type="radio" name="q1" value="a"> Tackle it head-on<br>
+            <input type="radio" name="q1" value="b"> Analyze it carefully before acting<br>
+            <input type="radio" name="q1" value="c"> Seek help from others<br>
+        </div>
+        
+        <div class="question">
+            <h3>2. In your free time, you prefer to:</h3>
+            <input type="radio" name="q2" value="a"> Socialize with friends<br>
+            <input type="radio" name="q2" value="b"> Enjoy quiet activities alone<br>
+            <input type="radio" name="q2" value="c"> Try something new and adventurous<br>
+        </div>
+        
+        <div class="question">
+            <h3>3. Your ideal vacation is:</h3>
+            <input type="radio" name="q3" value="a"> Exploring a new city<br>
+            <input type="radio" name="q3" value="b"> Relaxing on a quiet beach<br>
+            <input type="radio" name="q3" value="c"> An active outdoor adventure<br>
+        </div>
+        
+        <div class="question">
+            <h3>4. When making decisions, you usually:</h3>
+            <input type="radio" name="q4" value="a"> Go with your gut feeling<br>
+            <input type="radio" name="q4" value="b"> Carefully weigh the pros and cons<br>
+            <input type="radio" name="q4" value="c"> Ask others for their opinions<br>
+        </div>
+        
+        <div class="question">
+            <h3>5. You feel most energized when:</h3>
+            <input type="radio" name="q5" value="a"> Leading a group project<br>
+            <input type="radio" name="q5" value="b"> Solving a complex problem<br>
+            <input type="radio" name="q5" value="c"> Helping others succeed<br>
+        </div>
+        
+        <button id="submit">Get Results</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('submit').addEventListener('click', async () => {
+            // Collect answers
+            const answers = [];
+            for (let i = 1; i <= 5; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    answers.push(selected.value);
+                } else {
+                    alert(`Please answer question ${i}`);
+                    return;
+                }
+            }
+            
+            // Generate prompt
+            const prompt = `
+                Please analyze these personality quiz answers and provide a detailed personality analysis.
+                The answers are: ${answers.join(', ')}.
+                
+                Format your response with:
+                1. A creative personality type name
+                2. Key characteristics based on the answers
+                3. Strengths
+                4. Potential areas for growth
+                5. Career suggestions that might suit this personality
+                6. A fun fact about this personality type
+                
+                Make it insightful yet fun, like a personality quiz you'd see in a magazine.
+            `;
+            
+            // Get AI response
+            try {
+                const completion = await websim.chat.completions.create({
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are a personality expert who analyzes quiz results in an engaging, magazine-style format."
+                        },
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ]
+                });
+                
+                document.getElementById('result').textContent = completion.content;
+                document.getElementById('result').style.display = 'block';
+            } catch (error) {
+                alert("Error getting results. Please try again.");
+                console.error(error);
+            }
+        });
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
